@@ -1,8 +1,16 @@
 import { api } from "../../../shared/services/api"
-import type { TvShow } from "../types"
+import { createAsset } from "../../../shared/services/assets"
+import type { CreateTvShowDTO, TvShow } from "../types"
 
 type TvShowNormalized = Omit<TvShow, '@key'> & {
   id: string
+}
+
+export const createTvShow = async (data: CreateTvShowDTO) => {
+  return createAsset({
+    '@assetType': 'tvShows',
+    ...data,
+  })
 }
 
 export const getTvShows = async (): Promise<TvShowNormalized[]> => {

@@ -1,8 +1,36 @@
+import { useState } from 'react'
 import './App.css'
+import { useCreateTvShow } from './features/tv-shows/hooks/useCreateTvShow'
 import { useTvShows } from './features/tv-shows/hooks/useTvShows'
 
 function App() {
-  const { data, isLoading, error } = useTvShows()
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [recommendedAge, setRecommendedAge] = useState('')
+
+  const { data, isLoading, error } = useTvShows();
+  const { mutate: createTvShow, isPending } = useCreateTvShow();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!title) return
+
+    createTvShow(
+      {
+        title,
+        description,
+        recommendedAge: Number(recommendedAge),
+      },
+      {
+        onSuccess: () => {
+          setTitle('')
+          setDescription('')
+          setRecommendedAge('')
+        },
+      }
+    )
+  }
 
   if (isLoading) return <p>Loading...</p>
   if (error) return <p>Error loading data</p>
@@ -13,6 +41,47 @@ function App() {
         <h1 className="text-2xl font-bold mb-6">
           TV Shows
         </h1>
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-4 rounded-lg shadow-sm mb-6 space-y-3"
+        >
+          <h2 className="text-lg font-semibold">
+            Add TV Show
+          </h2>
+
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          <input
+            type="text"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          <input
+            type="number"
+            placeholder="Recommended Age"
+            value={recommendedAge}
+            onChange={(e) => setRecommendedAge(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          <button
+            type="submit"
+            disabled={!title || isPending}
+            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          >
+            {isPending ? 'Creating...' : 'Add TV Show'}
+          </button>
+        </form>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {data?.map((tvShow) => (

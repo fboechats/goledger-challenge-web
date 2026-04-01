@@ -5,3 +5,8 @@ export type TvShow = {
     description: string
     recommendedAge: number
 }
+
+export type CreateTvShowDTO = Omit<
+    TvShow,
+    '@key' | '@assetType'
+>
