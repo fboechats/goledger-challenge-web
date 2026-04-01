@@ -1,14 +1,20 @@
-import type { AssetsCreation, AssetsDeletion } from "../types/assets"
+import type { AssetsCreate, AssetsDelete, AssetsUpdate } from "../types/assets"
 import { api } from "./api"
 
-export const createAsset = async <T extends AssetsCreation>(asset: T) => {
+export const createAsset = async <T extends AssetsCreate>(asset: T) => {
     return api.post('/api/invoke/createAsset', {
         asset: [asset],
     })
 }
 
-export const deleteAsset = async <T extends AssetsDeletion>(asset: T) => {
+export const deleteAsset = async <T extends AssetsDelete>(asset: T) => {
     return api.post('/api/invoke/deleteAsset', {
         key: asset,
+    })
+}
+
+export const updateAsset = async <T extends AssetsUpdate>(asset: T) => {
+    return api.post('/api/invoke/updateAsset', {
+        update: asset,
     })
 }

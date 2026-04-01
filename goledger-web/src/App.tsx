@@ -3,14 +3,18 @@ import './App.css'
 import { useCreateTvShow } from './features/tv-shows/hooks/useCreateTvShow'
 import { useDeleteTvShow } from './features/tv-shows/hooks/useDeleteTvShow'
 import { useTvShows } from './features/tv-shows/hooks/useTvShows'
+import { useUpdateTvShow } from './features/tv-shows/hooks/useUpdateTvShow'
 
 function App() {
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [title, setTitle] = useState('')
+  const [editedDescription, setEditedDescription] = useState('')
   const [description, setDescription] = useState('')
   const [recommendedAge, setRecommendedAge] = useState('')
 
   const { data, isLoading, error } = useTvShows();
   const { mutate: createTvShow, isPending } = useCreateTvShow();
+  const { mutate: updateTvShow } = useUpdateTvShow();
   const { mutate: deleteTvShow } = useDeleteTvShow()
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,6 +33,24 @@ function App() {
           setTitle('')
           setDescription('')
           setRecommendedAge('')
+        },
+      }
+    )
+  }
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!editingId) return
+
+    updateTvShow(
+      {
+        "@key": editingId,
+        description: editedDescription,
+      },
+      {
+        onSuccess: () => {
+          setEditingId(null)
         },
       }
     )
@@ -91,9 +113,17 @@ function App() {
               key={tvShow.id}
               className="border rounded-lg p-4 shadow-sm bg-white"
             >
-              <h3 className="text-lg font-semibold">
-                {tvShow.title}
-              </h3>
+              {editingId === tvShow.id ? (
+                <input
+                  defaultValue={tvShow.title}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                />
+              ) : (
+                <h3 className="text-lg font-semibold">
+                  {tvShow.title}
+                </h3>
+              )}
+
 
               <p className="text-sm text-gray-600 mt-2 line-clamp-3">
                 {tvShow.description}
@@ -102,6 +132,12 @@ function App() {
               <span className="text-xs mt-3 block text-gray-500">
                 Age: {tvShow.recommendedAge}+
               </span>
+              <button onClick={() => setEditingId(tvShow.id)}>
+                Edit
+              </button>
+              <button onClick={handleUpdate}>
+                Save
+              </button>
               <button
                 onClick={() => {
                   if (confirm('Are you sure you want to delete this TV Show?')) {

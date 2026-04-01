@@ -10,3 +10,8 @@ export type CreateTvShowDTO = Omit<
     TvShow,
     '@key' | '@assetType'
 >
+
+export type UpdateTvShowDTO = Omit<
+    TvShow,
+    '@assetType' | 'title' | 'recommendedAge'
+>
