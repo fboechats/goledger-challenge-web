@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { useCreateTvShow } from './features/tv-shows/hooks/useCreateTvShow'
+import { useDeleteTvShow } from './features/tv-shows/hooks/useDeleteTvShow'
 import { useTvShows } from './features/tv-shows/hooks/useTvShows'
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
 
   const { data, isLoading, error } = useTvShows();
   const { mutate: createTvShow, isPending } = useCreateTvShow();
+  const { mutate: deleteTvShow } = useDeleteTvShow()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -100,6 +102,17 @@ function App() {
               <span className="text-xs mt-3 block text-gray-500">
                 Age: {tvShow.recommendedAge}+
               </span>
+              <button
+                onClick={() => {
+                  if (confirm('Are you sure you want to delete this TV Show?')) {
+                    deleteTvShow(tvShow.id)
+                  }
+                }}
+                disabled={isPending}
+                className="mt-3 text-red-600 text-sm hover:underline disabled:opacity-50"
+              >
+                Delete
+              </button>
             </div>
           ))}
         </div>

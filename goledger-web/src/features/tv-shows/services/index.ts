@@ -1,16 +1,9 @@
 import { api } from "../../../shared/services/api"
-import { createAsset } from "../../../shared/services/assets"
+import { createAsset, deleteAsset } from "../../../shared/services/assets"
 import type { CreateTvShowDTO, TvShow } from "../types"
 
 type TvShowNormalized = Omit<TvShow, '@key'> & {
   id: string
-}
-
-export const createTvShow = async (data: CreateTvShowDTO) => {
-  return createAsset({
-    '@assetType': 'tvShows',
-    ...data,
-  })
 }
 
 export const getTvShows = async (): Promise<TvShowNormalized[]> => {
@@ -28,4 +21,18 @@ export const getTvShows = async (): Promise<TvShowNormalized[]> => {
     ...item,
     id: item['@key'],
   }))
+}
+
+export const createTvShow = async (data: CreateTvShowDTO) => {
+  return createAsset({
+    '@assetType': 'tvShows',
+    ...data,
+  })
+}
+
+export const deleteTvShow = async (id: string) => {
+  return deleteAsset({
+    '@assetType': 'tvShows',
+    '@key': id
+  })
 }
