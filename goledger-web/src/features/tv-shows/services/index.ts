@@ -2,7 +2,7 @@ import { api } from "../../../shared/services/api"
 import { createAsset, deleteAsset, updateAsset } from "../../../shared/services/assets"
 import type { CreateTvShowDTO, TvShow, UpdateTvShowDTO } from "../types"
 
-type TvShowNormalized = Omit<TvShow, '@key'> & {
+export type TvShowNormalized = Omit<TvShow, '@key'> & {
   id: string
 }
 

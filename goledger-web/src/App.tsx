@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import { TvShowCard } from './features/tv-shows/components/TvShowCard'
 import { useCreateTvShow } from './features/tv-shows/hooks/useCreateTvShow'
 import { useDeleteTvShow } from './features/tv-shows/hooks/useDeleteTvShow'
 import { useTvShows } from './features/tv-shows/hooks/useTvShows'
@@ -7,15 +7,16 @@ import { useUpdateTvShow } from './features/tv-shows/hooks/useUpdateTvShow'
 
 function App() {
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [title, setTitle] = useState('')
   const [editedDescription, setEditedDescription] = useState('')
+
+  const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [recommendedAge, setRecommendedAge] = useState('')
 
-  const { data, isLoading, error } = useTvShows();
-  const { mutate: createTvShow, isPending } = useCreateTvShow();
-  const { mutate: updateTvShow } = useUpdateTvShow();
-  const { mutate: deleteTvShow } = useDeleteTvShow()
+  const { data, isLoading, error } = useTvShows()
+  const { mutate: createTvShow, isPending } = useCreateTvShow()
+  const { mutate: updateTvShow, isPending: isUpdating } = useUpdateTvShow()
+  const { mutate: deleteTvShow, isPending: isDeleting } = useDeleteTvShow()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,14 +39,12 @@ function App() {
     )
   }
 
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const handleUpdate = () => {
     if (!editingId) return
 
     updateTvShow(
       {
-        "@key": editingId,
+        '@key': editingId,
         description: editedDescription,
       },
       {
@@ -56,102 +55,85 @@ function App() {
     )
   }
 
-  if (isLoading) return <p>Loading...</p>
-  if (error) return <p>Error loading data</p>
+  if (isLoading) return <p className="p-4">Loading...</p>
+  if (error) return <p className="p-4">Error loading data</p>
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">
-          TV Shows
-        </h1>
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-6xl mx-auto px-4 py-10">
+
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold">TV Shows</h1>
+          <span className="text-sm text-gray-500">
+            {data?.length ?? 0} items
+          </span>
+        </div>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-4 rounded-lg shadow-sm mb-6 space-y-3"
+          className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-10"
         >
-          <h2 className="text-lg font-semibold">
-            Add TV Show
+          <h2 className="text-lg font-semibold mb-4">
+            Add New TV Show
           </h2>
 
-          <input
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border p-2 rounded"
-          />
+          <div className="grid gap-3 md:grid-cols-3">
+            <input
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border p-2 rounded"
-          />
+            <input
+              type="text"
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
-          <input
-            type="number"
-            placeholder="Recommended Age"
-            value={recommendedAge}
-            onChange={(e) => setRecommendedAge(e.target.value)}
-            className="w-full border p-2 rounded"
-          />
+            <input
+              type="number"
+              placeholder="Age"
+              value={recommendedAge}
+              onChange={(e) => setRecommendedAge(e.target.value)}
+              className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-          <button
-            type="submit"
-            disabled={!title || isPending}
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          >
-            {isPending ? 'Creating...' : 'Add TV Show'}
-          </button>
+          <div className="mt-4 flex justify-end">
+            <button
+              type="submit"
+              disabled={!title || isPending}
+              className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              {isPending ? 'Creating...' : 'Add TV Show'}
+            </button>
+          </div>
         </form>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {data?.map((tvShow) => (
-            <div
-              key={tvShow.id}
-              className="border rounded-lg p-4 shadow-sm bg-white"
-            >
-              {editingId === tvShow.id ? (
-                <input
-                  defaultValue={tvShow.title}
-                  onChange={(e) => setEditedDescription(e.target.value)}
-                />
-              ) : (
-                <h3 className="text-lg font-semibold">
-                  {tvShow.title}
-                </h3>
-              )}
-
-
-              <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-                {tvShow.description}
-              </p>
-
-              <span className="text-xs mt-3 block text-gray-500">
-                Age: {tvShow.recommendedAge}+
-              </span>
-              <button onClick={() => setEditingId(tvShow.id)}>
-                Edit
-              </button>
-              <button onClick={handleUpdate}>
-                Save
-              </button>
-              <button
-                onClick={() => {
-                  if (confirm('Are you sure you want to delete this TV Show?')) {
-                    deleteTvShow(tvShow.id)
-                  }
-                }}
-                disabled={isPending}
-                className="mt-3 text-red-600 text-sm hover:underline disabled:opacity-50"
-              >
-                Delete
-              </button>
-            </div>
+            <TvShowCard
+              tvShow={tvShow}
+              isEditing={editingId === tvShow.id}
+              isDeleting={isDeleting}
+              isUpdating={isUpdating}
+              editedDescription={editedDescription}
+              onEdit={() => {
+                setEditingId(tvShow.id)
+                setEditedDescription(tvShow.description)
+              }}
+              onCancel={() => setEditingId(null)}
+              onChangeDescription={setEditedDescription}
+              onSave={handleUpdate}
+              onDelete={() => deleteTvShow(tvShow.id)}
+            />
           ))}
         </div>
+
       </div>
     </div>
   )
