@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import type { TvShowNormalized } from "../services"
 
 type Props = {
@@ -24,76 +25,92 @@ export const TvShowCard = ({
     onChangeDescription,
     onDelete,
     onSave
-}: Props) => (
-    <div
-        key={tvShow.id}
-        className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
-    >
-        <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                {tvShow.title}
-            </h3>
+}: Props) => {
+    const navigate = useNavigate();
 
-            {isEditing ? (
-                <textarea
-                    style={{ resize: "none" }}
-                    value={editedDescription}
-                    onChange={(e) => onChangeDescription(e.target.value)}
-                    className="w-full border p-2 rounded mt-3"
-                />
-            ) : (
-                <p className="text-sm text-gray-600 mt-3 line-clamp-3">
-                    {tvShow.description}
-                </p>
-            )}
-        </div>
+    return (
+        <div
+            key={tvShow.id}
+            className="bg-white rounded-xl cursor-pointer shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
+            onClick={() => navigate(`/tv-shows/${tvShow.id}`)}
+        >
+            <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                    {tvShow.title}
+                </h3>
 
-        <div className="border-t border-gray-100 mt-4 pt-3 flex justify-between items-center">
-            <span className="text-xs text-gray-500">
-                Age: {tvShow.recommendedAge}+
-            </span>
-
-            <div className="flex gap-3">
                 {isEditing ? (
-                    <>
-                        <button
-                            onClick={onSave}
-                            disabled={isUpdating}
-                            className="text-blue-600 text-sm font-medium hover:underline"
-                        >
-                            Save
-                        </button>
-
-                        <button
-                            onClick={onCancel}
-                            className="text-gray-500 text-sm font-medium hover:underline"
-                        >
-                            Cancel
-                        </button>
-                    </>
+                    <textarea
+                        style={{ resize: "none" }}
+                        value={editedDescription}
+                        onChange={(e) => onChangeDescription(e.target.value)}
+                        className="w-full border p-2 rounded mt-3"
+                    />
                 ) : (
-                    <>
-                        <button
-                            onClick={onEdit}
-                            className="text-blue-600 text-sm font-medium hover:underline"
-                        >
-                            Edit
-                        </button>
-
-                        <button
-                            onClick={() => {
-                                if (confirm('Delete this TV Show?')) {
-                                    onDelete();
-                                }
-                            }}
-                            disabled={isDeleting}
-                            className="text-red-600 text-sm font-medium hover:underline disabled:opacity-50"
-                        >
-                            Delete
-                        </button>
-                    </>
+                    <p className="text-sm text-gray-600 mt-3 line-clamp-3">
+                        {tvShow.description}
+                    </p>
                 )}
             </div>
+
+            <div className="border-t border-gray-100 mt-4 pt-3 flex justify-between items-center">
+                <span className="text-xs text-gray-500">
+                    Age: {tvShow.recommendedAge}+
+                </span>
+
+                <div className="flex gap-3">
+                    {isEditing ? (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onSave();
+                                }}
+                                disabled={isUpdating}
+                                className="text-blue-600 text-sm font-medium hover:underline"
+                            >
+                                Save
+                            </button>
+
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onCancel();
+                                }}
+                                className="text-gray-500 text-sm font-medium hover:underline"
+                            >
+                                Cancel
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onEdit();
+                                }}
+                                className="text-blue-600 text-sm font-medium hover:underline"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    if (confirm('Delete this TV Show?')) {
+                                        onDelete();
+                                    }
+                                }}
+                                disabled={isDeleting}
+                                className="text-red-600 text-sm font-medium hover:underline disabled:opacity-50"
+                            >
+                                Delete
+                            </button>
+                        </>
+                    )}
+                </div>
+            </div>
         </div>
-    </div>
-)
+    )
+}
