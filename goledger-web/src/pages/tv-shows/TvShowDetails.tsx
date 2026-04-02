@@ -1,29 +1,36 @@
 import { useParams } from 'react-router-dom';
+import { useSeasons } from '../../features/seasons/hooks/useSeaons';
 import { useTvShow } from '../../features/tv-shows/hooks/useTvShow';
 
 export default function TvShowDetails() {
     const { id } = useParams();
     const { data, isLoading } = useTvShow(id);
+    const { data: seasons, isLoading: loadingSeasons } = useSeasons(id);
 
     if (isLoading) return <p className="p-8">Loading...</p>
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <div className="max-w-4xl mx-auto px-4 py-10">
+        <div className="mt-10">
+            <h2 className="text-xl font-semibold mb-4">
+                Seasons
+            </h2>
 
-                <h1 className="text-3xl font-bold">
-                    {data?.title}
-                </h1>
-
-                <p className="mt-4 text-gray-700">
-                    {data?.description}
-                </p>
-
-                <span className="mt-4 block text-sm text-gray-500">
-                    Age: {data?.recommendedAge}+
-                </span>
-
-            </div>
+            {loadingSeasons ? (
+                <p>Loading seasons...</p>
+            ) : (
+                <div className="space-y-3">
+                    {seasons?.map((season) => (
+                        <div
+                            key={season.id}
+                            className="bg-white p-4 rounded-lg shadow-sm border"
+                        >
+                            <p className="font-medium">
+                                Season {season.number}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
