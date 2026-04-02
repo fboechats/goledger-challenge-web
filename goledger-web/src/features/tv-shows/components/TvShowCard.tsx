@@ -30,7 +30,6 @@ export const TvShowCard = ({
 
     return (
         <div
-            key={tvShow.id}
             className="bg-white rounded-xl cursor-pointer shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
             onClick={() => navigate(`/tv-shows/${tvShow.id}`)}
         >

@@ -1,5 +1,5 @@
 import { api } from "../../../shared/services/api"
-import { createAsset, deleteAsset, updateAsset } from "../../../shared/services/assets"
+import { createAsset, deleteAsset, readAsset, updateAsset } from "../../../shared/services/assets"
 import type { CreateTvShowDTO, TvShow, UpdateTvShowDTO } from "../types"
 
 export type TvShowNormalized = Omit<TvShow, '@key'> & {
@@ -42,4 +42,13 @@ export const updateTvShow = async (data: UpdateTvShowDTO) => {
     "@assetType": 'tvShows',
     ...data,
   })
+}
+
+export const getTvShowById = async (id: string) => {
+  const response = await readAsset({
+    "@assetType": 'tvShows',
+    "@key": id,
+  })
+
+  return response.data
 }

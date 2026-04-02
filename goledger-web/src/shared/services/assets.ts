@@ -1,5 +1,11 @@
-import type { AssetsCreate, AssetsDelete, AssetsUpdate } from "../types/assets"
+import type { AssetsCreate, AssetsDelete, AssetsRead, AssetsUpdate } from "../types/assets"
 import { api } from "./api"
+
+export const readAsset = async <T extends AssetsRead>(asset: T) => {
+    return api.post('/api/query/readAsset', {
+        key: asset,
+    })
+}
 
 export const createAsset = async <T extends AssetsCreate>(asset: T) => {
     return api.post('/api/invoke/createAsset', {
