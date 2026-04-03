@@ -1,7 +1,8 @@
+import type { Episode } from "../../features/episodes/services";
 import type { Season } from "../../features/seasons/services";
 import type { TvShow } from "../../features/tv-shows/types";
 
-export type AssetsCreate = Omit<TvShow, "@key"> | Omit<Season, "@key">;
+export type AssetsCreate = Omit<TvShow, "@key"> | Omit<Season, "@key"> | Omit<Episode, "@key">;
 
 export type AssetsRead = Pick<TvShow, "@key">;
 

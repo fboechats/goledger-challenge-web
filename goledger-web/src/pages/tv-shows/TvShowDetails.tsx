@@ -1,22 +1,34 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCreateEpisode } from '../../features/episodes/hooks/useCreateEpisode';
+import { useEpisodes } from '../../features/episodes/hooks/useEpisodes';
 import { useCreateSeason } from '../../features/seasons/hooks/useCreateSeason';
 import { useDeleteSeason } from '../../features/seasons/hooks/useDeleteSeason';
 import { useSeasons } from '../../features/seasons/hooks/useSeasons';
 import { useUpdateSeason } from '../../features/seasons/hooks/useUpdateSeason';
 import { useTvShow } from '../../features/tv-shows/hooks/useTvShow';
+import { toRFC3339 } from '../../shared/utils/toRFC3339';
 
 export default function TvShowDetails() {
     const { id } = useParams();
+
+    const [selectedSeason, setSelectedSeason] = useState<string | null>(null)
     const [editingId, setEditingId] = useState<string | null>(null)
     const [editedYear, setEditedYear] = useState('')
     const [seasonNumber, setSeasonNumber] = useState('');
     const [seasonYear, setSeasonYear] = useState('');
+    const [episodeTitle, setEpisodeTitle] = useState('');
+    const [episodeNumber, setEpisodeNumber] = useState('')
+    const [episodeDescription, setEpisodeDescription] = useState('')
+    const [releaseDate, setReleaseDate] = useState('')
+
     const { mutate: createSeason, isPending } = useCreateSeason(id!);
     const { data, isLoading } = useTvShow(id);
     const { data: seasons, isLoading: loadingSeasons } = useSeasons(id);
     const { mutate: deleteSeason, isPending: isDeleting } = useDeleteSeason();
     const { mutate: updateSeason, isPending: isUpdating } = useUpdateSeason();
+    const { data: episodes } = useEpisodes(selectedSeason || undefined);
+    const { mutate: createEpisode } = useCreateEpisode(selectedSeason!);
 
     const sortedSeasons = useMemo(() =>
         seasons
@@ -94,7 +106,7 @@ export default function TvShowDetails() {
             ) : (
                 <div className="space-y-3">
                     {sortedSeasons?.map((season) => (
-                        <div className="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
+                        <div key={season.id} className="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
                             <div>
                                 <p className="font-medium">
                                     Season {season.number}
@@ -156,8 +168,94 @@ export default function TvShowDetails() {
                                     </>
                                 )}
                             </div>
+                            <button
+                                onClick={() => setSelectedSeason(season.id)}
+                                className="text-sm text-blue-600"
+                            >
+                                View Episodes
+                            </button>
                         </div>
                     ))}
+                    {selectedSeason && (
+                        <div className="mt-8">
+                            <h3 className="text-lg font-semibold mb-3">
+                                Episodes
+                            </h3>
+
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault()
+
+                                    createEpisode({
+                                        season: { '@key': selectedSeason! },
+                                        episodeNumber: Number(episodeNumber),
+                                        title: episodeTitle,
+                                        description: episodeDescription,
+                                        releaseDate: toRFC3339(releaseDate),
+                                    })
+
+                                    setEpisodeNumber('')
+                                    setEpisodeTitle('')
+                                    setEpisodeDescription('')
+                                    setReleaseDate('')
+                                }}
+                                className="space-y-2 mb-4"
+                            >
+                                <input
+                                    placeholder="Episode Number"
+                                    value={episodeNumber}
+                                    onChange={(e) => setEpisodeNumber(e.target.value)}
+                                    className="border p-2 rounded w-full"
+                                />
+
+                                <input
+                                    placeholder="Title"
+                                    value={episodeTitle}
+                                    onChange={(e) => setEpisodeTitle(e.target.value)}
+                                    className="border p-2 rounded w-full"
+                                />
+
+                                <input
+                                    placeholder="Description"
+                                    value={episodeDescription}
+                                    onChange={(e) => setEpisodeDescription(e.target.value)}
+                                    className="border p-2 rounded w-full"
+                                />
+
+                                <input
+                                    type="date"
+                                    value={releaseDate}
+                                    onChange={(e) => setReleaseDate(e.target.value)}
+                                    className="border p-2 rounded w-full"
+                                />
+
+                                <button className="bg-blue-600 text-white px-4 py-2 rounded">
+                                    Add Episode
+                                </button>
+                            </form>
+
+                            <div className="space-y-2">
+                                {episodes?.map((ep) => (
+                                    <div
+                                        key={ep.id}
+                                        className="bg-white p-3 rounded border"
+                                    >
+                                        <p className="font-medium">
+                                            Ep {ep.episodeNumber} — {ep.title}
+                                        </p>
+
+                                        <p className="text-sm text-gray-600">
+                                            {ep.description}
+                                        </p>
+
+                                        <span className="text-xs text-gray-400">
+                                            {new Date(ep.releaseDate).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

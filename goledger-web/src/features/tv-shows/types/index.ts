@@ -6,12 +6,12 @@ export type TvShow = {
     recommendedAge: number
 }
 
-export type CreateTvShowDTO = Omit<
+export type CreateTvShowInput = Omit<
     TvShow,
     '@key' | '@assetType'
 >
 
-export type UpdateTvShowDTO = Omit<
+export type UpdateTvShowInput = Omit<
     TvShow,
     '@assetType' | 'title' | 'recommendedAge'
 >
