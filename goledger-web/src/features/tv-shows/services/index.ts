@@ -44,7 +44,7 @@ export const updateTvShow = async (data: UpdateTvShowInput) => {
   })
 }
 
-export const getTvShowById = async (id: string) => {
+export const getTvShowById = async (id: string): Promise<TvShow> => {
   const response = await readAsset({
     '@assetType': 'tvShows',
     '@key': id,
