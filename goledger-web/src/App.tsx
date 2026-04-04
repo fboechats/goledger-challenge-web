@@ -96,6 +96,7 @@ function App() {
               <input
                 type="text"
                 placeholder="Title"
+                required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
