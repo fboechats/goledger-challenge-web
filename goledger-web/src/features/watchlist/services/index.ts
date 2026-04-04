@@ -9,7 +9,11 @@ export type Watchlist = {
     tvShows: { '@assetType': string, '@key': string }[]
 }
 
-export const getWatchlists = async (): Promise<Watchlist[]> => {
+export type WatchlistNormalized = Omit<Watchlist, '@key'> & {
+    id: string
+}
+
+export const getWatchlists = async (): Promise<WatchlistNormalized[]> => {
     const response = await api.post('/api/query/search', {
         query: {
             selector: {
@@ -18,7 +22,12 @@ export const getWatchlists = async (): Promise<Watchlist[]> => {
         },
     })
 
-    return response.data.result
+    const result = response.data?.result ?? []
+
+    return result.map((item: Watchlist) => ({
+        ...item,
+        id: item['@key'],
+    }))
 }
 
 export type CreateWatchlistInput = {
