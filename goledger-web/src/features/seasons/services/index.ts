@@ -60,13 +60,13 @@ export const deleteSeason = async (id: string) => {
 }
 
 type UpdateSeasonInput = {
-    "@key": string,
+    '@key': string,
     year: number
 }
 
 export const updateSeason = async (data: UpdateSeasonInput) => {
     return updateAsset({
-        "@assetType": 'seasons',
+        '@assetType': 'seasons',
         ...data,
     })
 }

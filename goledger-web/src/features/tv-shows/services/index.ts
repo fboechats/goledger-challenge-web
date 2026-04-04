@@ -39,15 +39,15 @@ export const deleteTvShow = async (id: string) => {
 
 export const updateTvShow = async (data: UpdateTvShowInput) => {
   return updateAsset({
-    "@assetType": 'tvShows',
+    '@assetType': 'tvShows',
     ...data,
   })
 }
 
 export const getTvShowById = async (id: string) => {
   const response = await readAsset({
-    "@assetType": 'tvShows',
-    "@key": id,
+    '@assetType': 'tvShows',
+    '@key': id,
   })
 
   return response.data

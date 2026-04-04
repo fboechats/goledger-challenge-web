@@ -1,22 +1,27 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { TvShowCard } from './features/tv-shows/components/TvShowCard'
 import { useCreateTvShow } from './features/tv-shows/hooks/useCreateTvShow'
 import { useDeleteTvShow } from './features/tv-shows/hooks/useDeleteTvShow'
 import { useTvShows } from './features/tv-shows/hooks/useTvShows'
 import { useUpdateTvShow } from './features/tv-shows/hooks/useUpdateTvShow'
+import { useUpdateWatchlist } from './features/watchlist/hooks/useUpdateWatchlist'
+import { useWatchlists } from './features/watchlist/hooks/useWatchlists'
 
 function App() {
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editedDescription, setEditedDescription] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editedDescription, setEditedDescription] = useState('');
 
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [recommendedAge, setRecommendedAge] = useState('')
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [recommendedAge, setRecommendedAge] = useState('');
 
-  const { data, isLoading, error } = useTvShows()
-  const { mutate: createTvShow, isPending } = useCreateTvShow()
-  const { mutate: updateTvShow, isPending: isUpdating } = useUpdateTvShow()
-  const { mutate: deleteTvShow, isPending: isDeleting } = useDeleteTvShow()
+  const { data, isLoading, error } = useTvShows();
+  const { data: watchlists } = useWatchlists()
+  const { mutate: createTvShow, isPending } = useCreateTvShow();
+  const { mutate: updateTvShow, isPending: isUpdating } = useUpdateTvShow();
+  const { mutate: deleteTvShow, isPending: isDeleting } = useDeleteTvShow();
+  const { mutate: updateWatchlist } = useUpdateWatchlist();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,6 +72,12 @@ function App() {
           <span className="text-sm text-gray-500">
             {data?.length ?? 0} items
           </span>
+          <Link
+            to="/watchlist"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Watchlist
+          </Link>
         </div>
 
         <form
@@ -131,6 +142,24 @@ function App() {
               onChangeDescription={setEditedDescription}
               onSave={handleUpdate}
               onDelete={() => deleteTvShow(tvShow.id)}
+              addWatchlist={() => {
+                const watchlist = watchlists?.[0];
+                if (!watchlist) return
+
+                const exists = watchlist.tvShows?.some(
+                  (item) => item['@key'] === tvShow.id
+                )
+
+                if (exists) return
+
+                updateWatchlist({
+                  '@key': watchlist['@key'],
+                  tvShows: [
+                    ...(watchlist.tvShows || []),
+                    { '@assetType': 'tvShows', '@key': tvShow.id },
+                  ],
+                })
+              }}
             />
           ))}
         </div>

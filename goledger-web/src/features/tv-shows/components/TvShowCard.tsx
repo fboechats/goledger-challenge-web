@@ -2,16 +2,17 @@ import { useNavigate } from 'react-router-dom'
 import type { TvShowNormalized } from "../services"
 
 type Props = {
-    tvShow: TvShowNormalized
-    isEditing: boolean
-    isUpdating: boolean
-    isDeleting: boolean
-    editedDescription: string
-    onEdit: () => void
-    onCancel: () => void
+    tvShow: TvShowNormalized,
+    isEditing: boolean,
+    isUpdating: boolean,
+    isDeleting: boolean,
+    editedDescription: string,
+    onEdit: () => void,
+    onCancel: () => void,
     onChangeDescription: (value: string) => void
-    onSave: () => void
-    onDelete: () => void
+    onSave: () => void,
+    onDelete: () => void,
+    addWatchlist: () => void
 }
 
 export const TvShowCard = ({
@@ -24,7 +25,8 @@ export const TvShowCard = ({
     onCancel,
     onChangeDescription,
     onDelete,
-    onSave
+    onSave,
+    addWatchlist
 }: Props) => {
     const navigate = useNavigate();
 
@@ -108,6 +110,14 @@ export const TvShowCard = ({
                             </button>
                         </>
                     )}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            addWatchlist();
+                        }}
+                    >
+                        Add to Watchlist
+                    </button>
                 </div>
             </div>
         </div>
