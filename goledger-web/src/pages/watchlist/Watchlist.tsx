@@ -33,7 +33,6 @@ export default function Watchlist() {
                         </div>
                     ))}
                 </div>
-
             </div>
         </div>
     )
