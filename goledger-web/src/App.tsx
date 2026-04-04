@@ -18,11 +18,13 @@ function App() {
   const [recommendedAge, setRecommendedAge] = useState('');
 
   const { data, isLoading, error } = useTvShows();
-  const { data: watchlists } = useWatchlists()
+  const { data: watchlists, isPending: isWatchlisting } = useWatchlists()
   const { mutate: createTvShow, isPending } = useCreateTvShow();
   const { mutate: updateTvShow, isPending: isUpdating } = useUpdateTvShow();
   const { mutate: deleteTvShow, isPending: isDeleting } = useDeleteTvShow();
   const { mutate: updateWatchlist } = useUpdateWatchlist();
+
+  const watchlist = watchlists?.[0];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -131,44 +133,44 @@ function App() {
           </form>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {data?.map((tvShow) => (
-              <TvShowCard
+            {data?.map((tvShow) => {
+              const alreadyAdded = watchlist?.tvShows?.some(
+                (item) => item['@key'] === tvShow.id
+              ) ?? false;
+
+              const handleAddToWatchlist = () => {
+                if (!watchlist || alreadyAdded) return
+
+                updateWatchlist({
+                  '@key': watchlist['@key'],
+                  tvShows: [
+                    ...(watchlist.tvShows || []),
+                    { '@assetType': 'tvShows', '@key': tvShow.id },
+                  ],
+                })
+              }
+
+              return <TvShowCard
                 key={tvShow.id}
                 tvShow={tvShow}
                 isEditing={editingId === tvShow.id}
                 isDeleting={isDeleting}
                 isUpdating={isUpdating}
+                isWatchlisting={isWatchlisting}
                 editedDescription={editedDescription}
-                onEdit={() => {
-                  setEditingId(tvShow.id)
-                  setEditedDescription(tvShow.description)
-                }}
                 onCancel={() => setEditingId(null)}
                 onChangeDescription={setEditedDescription}
                 onSave={handleUpdate}
                 onDelete={() => deleteTvShow(tvShow.id)}
-                addWatchlist={() => {
-                  const watchlist = watchlists?.[0];
-                  if (!watchlist) return
-
-                  const exists = watchlist.tvShows?.some(
-                    (item) => item['@key'] === tvShow.id
-                  )
-
-                  if (exists) return
-
-                  updateWatchlist({
-                    '@key': watchlist['@key'],
-                    tvShows: [
-                      ...(watchlist.tvShows || []),
-                      { '@assetType': 'tvShows', '@key': tvShow.id },
-                    ],
-                  })
+                alreadyWatchlisted={alreadyAdded}
+                onAddToWatchlist={handleAddToWatchlist}
+                onEdit={() => {
+                  setEditingId(tvShow.id)
+                  setEditedDescription(tvShow.description)
                 }}
               />
-            ))}
+            })}
           </div>
-
         </div>
       </div>
     </QueryState>

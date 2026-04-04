@@ -6,13 +6,15 @@ type Props = {
     isEditing: boolean,
     isUpdating: boolean,
     isDeleting: boolean,
+    isWatchlisting: boolean,
     editedDescription: string,
     onEdit: () => void,
     onCancel: () => void,
     onChangeDescription: (value: string) => void
     onSave: () => void,
     onDelete: () => void,
-    addWatchlist: () => void
+    alreadyWatchlisted: boolean,
+    onAddToWatchlist: () => void
 }
 
 export const TvShowCard = ({
@@ -20,13 +22,15 @@ export const TvShowCard = ({
     isEditing,
     isUpdating,
     isDeleting,
+    isWatchlisting,
     editedDescription,
     onEdit,
     onCancel,
     onChangeDescription,
     onDelete,
     onSave,
-    addWatchlist
+    alreadyWatchlisted,
+    onAddToWatchlist
 }: Props) => {
     const navigate = useNavigate();
 
@@ -35,31 +39,11 @@ export const TvShowCard = ({
             className="bg-white rounded-xl cursor-pointer shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
             onClick={() => navigate(`/tv-shows/${tvShow.id}`)}
         >
-            <div>
+            <div className="flex items-center">
                 <h3 className="text-lg font-semibold text-gray-800 mb-1">
                     {tvShow.title}
                 </h3>
-
-                {isEditing ? (
-                    <textarea
-                        style={{ resize: "none" }}
-                        value={editedDescription}
-                        onChange={(e) => onChangeDescription(e.target.value)}
-                        className="w-full border p-2 rounded mt-3"
-                    />
-                ) : (
-                    <p className="text-sm text-gray-600 mt-3 line-clamp-3">
-                        {tvShow.description}
-                    </p>
-                )}
-            </div>
-
-            <div className="border-t border-gray-100 mt-4 pt-3 flex justify-between items-center">
-                <span className="text-xs text-gray-500">
-                    Age: {tvShow.recommendedAge}+
-                </span>
-
-                <div className="flex gap-3">
+                <div className="flex gap-3 ml-auto">
                     {isEditing ? (
                         <>
                             <button
@@ -68,7 +52,7 @@ export const TvShowCard = ({
                                     onSave();
                                 }}
                                 disabled={isUpdating}
-                                className="text-blue-600 text-sm font-medium hover:underline"
+                                className="cursor-pointer text-blue-600 text-sm font-medium hover:underline"
                             >
                                 Save
                             </button>
@@ -78,7 +62,7 @@ export const TvShowCard = ({
                                     e.stopPropagation();
                                     onCancel();
                                 }}
-                                className="text-gray-500 text-sm font-medium hover:underline"
+                                className="cursor-pointer text-gray-500 text-sm font-medium hover:underline"
                             >
                                 Cancel
                             </button>
@@ -90,7 +74,7 @@ export const TvShowCard = ({
                                     e.stopPropagation();
                                     onEdit();
                                 }}
-                                className="text-blue-600 text-sm font-medium hover:underline"
+                                className="cursor-pointer text-blue-600 text-sm font-medium hover:underline"
                             >
                                 Edit
                             </button>
@@ -104,19 +88,51 @@ export const TvShowCard = ({
                                     }
                                 }}
                                 disabled={isDeleting}
-                                className="text-red-600 text-sm font-medium hover:underline disabled:opacity-50"
+                                className="cursor-pointer text-red-600 text-sm font-medium hover:underline disabled:opacity-50"
                             >
                                 Delete
                             </button>
                         </>
                     )}
+                </div>
+            </div>
+
+            {isEditing ? (
+                <textarea
+                    style={{ resize: "none" }}
+                    value={editedDescription}
+                    onChange={(e) => onChangeDescription(e.target.value)}
+                    className="w-full border p-2 rounded mt-3"
+                />
+            ) : (
+                <p className="text-sm text-gray-600 mt-3 line-clamp-3">
+                    {tvShow.description}
+                </p>
+            )}
+
+            <div className="border-t border-gray-100 mt-4 pt-3 flex justify-between items-center">
+                <span className="text-xs text-gray-500">
+                    Age: {tvShow.recommendedAge}+
+                </span>
+
+                <div className="flex gap-3">
+
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            addWatchlist();
+                            onAddToWatchlist();
                         }}
+                        disabled={alreadyWatchlisted}
+                        className={`text-sm ${alreadyWatchlisted
+                            ? 'text-gray-400 cursor-not-allowed'
+                            : 'text-green-600 hover:underline cursor-pointer'
+                            }`}
                     >
-                        Add to Watchlist
+                        {isWatchlisting
+                            ? 'Adding...'
+                            : alreadyWatchlisted
+                                ? 'Added'
+                                : 'Add to Watchlist'}
                     </button>
                 </div>
             </div>
