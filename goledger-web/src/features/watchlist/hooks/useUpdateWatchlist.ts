@@ -10,7 +10,6 @@ export const useUpdateWatchlist = () => {
         onError: () => toast.error('Something went wrong'),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['watchlist'] })
-            toast.success('Added to watchlist!')
         },
     })
 }

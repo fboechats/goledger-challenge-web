@@ -6,6 +6,7 @@ type Props = {
     isEditing: boolean,
     isUpdating: boolean,
     isDeleting: boolean,
+    isWatchlisting: boolean,
     editedDescription: string,
     onEdit: () => void,
     onCancel: () => void,
@@ -22,6 +23,7 @@ export const TvShowCard = ({
     isEditing,
     isUpdating,
     isDeleting,
+    isWatchlisting,
     editedDescription,
     onEdit,
     onCancel,
@@ -120,6 +122,7 @@ export const TvShowCard = ({
                     {alreadyWatchlisted ? (
                         <button
                             className="cursor-pointer text-red-600 text-sm hover:underline"
+                            disabled={isWatchlisting}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onRemoveFromWatchlist()
@@ -130,6 +133,7 @@ export const TvShowCard = ({
                     ) : (
                         <button
                             className="cursor-pointer text-green-600 text-sm hover:underline"
+                            disabled={isWatchlisting}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onAddToWatchlist()

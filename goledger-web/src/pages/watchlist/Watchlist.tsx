@@ -1,6 +1,8 @@
+import toast from 'react-hot-toast';
 import { useTvShows } from '../../features/tv-shows/hooks/useTvShows';
 import { useUpdateWatchlist } from '../../features/watchlist/hooks/useUpdateWatchlist';
 import { useWatchlists } from '../../features/watchlist/hooks/useWatchlists';
+import { removeTvShowFromWatchlist } from '../../features/watchlist/utils';
 import { Breadcrumb } from '../../shared/components/Breadcrumb';
 import { QueryState } from '../../shared/components/QueryState';
 
@@ -40,17 +42,21 @@ export default function Watchlist() {
                             const handleRemoveFromWatchlist = () => {
                                 if (!watchlist) return
 
-                                const updatedTvShows = watchlist.tvShows
-                                    .filter((item) => item.id !== tvShow.id)
-                                    .map((item) => ({
-                                        '@key': item.id,
-                                        '@assetType': item['@assetType'],
-                                    }))
+                                const refs = removeTvShowFromWatchlist(watchlist, tvShow.id)
 
-                                updateWatchlist({
-                                    '@key': watchlist.id,
-                                    tvShows: updatedTvShows,
-                                })
+                                if (!refs) return
+
+                                updateWatchlist(
+                                    {
+                                        '@key': watchlist.id,
+                                        tvShows: refs,
+                                    },
+                                    {
+                                        onSuccess: () => {
+                                            toast.success('Removed to watchlist!')
+                                        },
+                                    }
+                                )
                             }
 
                             return (

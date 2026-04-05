@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import { TvShowCard } from './features/tv-shows/components/TvShowCard'
 import { useCreateTvShow } from './features/tv-shows/hooks/useCreateTvShow'
@@ -7,8 +8,8 @@ import { useTvShows } from './features/tv-shows/hooks/useTvShows'
 import { useUpdateTvShow } from './features/tv-shows/hooks/useUpdateTvShow'
 import { useUpdateWatchlist } from './features/watchlist/hooks/useUpdateWatchlist'
 import { useWatchlists } from './features/watchlist/hooks/useWatchlists'
+import { addTvShowToWatchlist, removeTvShowFromWatchlist } from './features/watchlist/utils'
 import { QueryState } from './shared/components/QueryState'
-import { mapToApiRefs } from './shared/utils/mapToApiRefs'
 
 function App() {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -23,7 +24,7 @@ function App() {
   const { mutate: createTvShow, isPending } = useCreateTvShow();
   const { mutate: updateTvShow, isPending: isUpdating } = useUpdateTvShow();
   const { mutate: deleteTvShow, isPending: isDeleting } = useDeleteTvShow();
-  const { mutate: updateWatchlist } = useUpdateWatchlist();
+  const { mutate: updateWatchlist, isPending: isWatchlisting } = useUpdateWatchlist();
 
   const watchlist = watchlists?.[0];
 
@@ -142,30 +143,41 @@ function App() {
               const handleAddToWatchlist = () => {
                 if (!watchlist) return
 
-                const updatedTvShows = [
-                  ...watchlist.tvShows,
-                  {
-                    id: tvShow.id,
-                    '@assetType': 'tvShows',
-                  },
-                ]
+                const refs = addTvShowToWatchlist(watchlist, tvShow.id)
 
-                updateWatchlist({
-                  '@key': watchlist.id,
-                  tvShows: mapToApiRefs(updatedTvShows),
-                })
+                if (!refs) return
+
+                updateWatchlist(
+                  {
+                    '@key': watchlist.id,
+                    tvShows: refs,
+                  },
+                  {
+                    onSuccess: () => {
+                      toast.success('Added to watchlist!')
+                    },
+                  }
+                )
               }
 
               const handleRemoveFromWatchlist = () => {
                 if (!watchlist) return
 
-                const updatedTvShows = watchlist.tvShows
-                  .filter((item) => item.id !== tvShow.id)
+                const refs = removeTvShowFromWatchlist(watchlist, tvShow.id)
 
-                updateWatchlist({
-                  '@key': watchlist.id,
-                  tvShows: mapToApiRefs(updatedTvShows),
-                })
+                if (!refs) return
+
+                updateWatchlist(
+                  {
+                    '@key': watchlist.id,
+                    tvShows: refs,
+                  },
+                  {
+                    onSuccess: () => {
+                      toast.success('Removed from watchlist!')
+                    },
+                  }
+                )
               }
 
               return <TvShowCard
@@ -174,6 +186,7 @@ function App() {
                 isEditing={editingId === tvShow.id}
                 isDeleting={isDeleting}
                 isUpdating={isUpdating}
+                isWatchlisting={isWatchlisting}
                 editedDescription={editedDescription}
                 onCancel={() => setEditingId(null)}
                 onChangeDescription={setEditedDescription}
