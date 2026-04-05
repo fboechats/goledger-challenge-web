@@ -8,6 +8,7 @@ import { useUpdateTvShow } from './features/tv-shows/hooks/useUpdateTvShow'
 import { useUpdateWatchlist } from './features/watchlist/hooks/useUpdateWatchlist'
 import { useWatchlists } from './features/watchlist/hooks/useWatchlists'
 import { QueryState } from './shared/components/QueryState'
+import { mapToApiRefs } from './shared/utils/mapToApiRefs'
 
 function App() {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -18,7 +19,7 @@ function App() {
   const [recommendedAge, setRecommendedAge] = useState('');
 
   const { data, isLoading, error } = useTvShows();
-  const { data: watchlists, isPending: isWatchlisting } = useWatchlists()
+  const { data: watchlists } = useWatchlists()
   const { mutate: createTvShow, isPending } = useCreateTvShow();
   const { mutate: updateTvShow, isPending: isUpdating } = useUpdateTvShow();
   const { mutate: deleteTvShow, isPending: isDeleting } = useDeleteTvShow();
@@ -135,18 +136,35 @@ function App() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {data?.map((tvShow) => {
               const alreadyAdded = watchlist?.tvShows?.some(
-                (item) => item['@key'] === tvShow.id
+                (item) => item.id === tvShow.id
               ) ?? false;
 
               const handleAddToWatchlist = () => {
-                if (!watchlist || alreadyAdded) return
+                if (!watchlist) return
+
+                const updatedTvShows = [
+                  ...watchlist.tvShows,
+                  {
+                    id: tvShow.id,
+                    '@assetType': 'tvShows',
+                  },
+                ]
 
                 updateWatchlist({
-                  '@key': watchlist['@key'],
-                  tvShows: [
-                    ...(watchlist.tvShows || []),
-                    { '@assetType': 'tvShows', '@key': tvShow.id },
-                  ],
+                  '@key': watchlist.id,
+                  tvShows: mapToApiRefs(updatedTvShows),
+                })
+              }
+
+              const handleRemoveFromWatchlist = () => {
+                if (!watchlist) return
+
+                const updatedTvShows = watchlist.tvShows
+                  .filter((item) => item.id !== tvShow.id)
+
+                updateWatchlist({
+                  '@key': watchlist.id,
+                  tvShows: mapToApiRefs(updatedTvShows),
                 })
               }
 
@@ -156,13 +174,13 @@ function App() {
                 isEditing={editingId === tvShow.id}
                 isDeleting={isDeleting}
                 isUpdating={isUpdating}
-                isWatchlisting={isWatchlisting}
                 editedDescription={editedDescription}
                 onCancel={() => setEditingId(null)}
                 onChangeDescription={setEditedDescription}
                 onSave={handleUpdate}
                 onDelete={() => deleteTvShow(tvShow.id)}
                 alreadyWatchlisted={alreadyAdded}
+                onRemoveFromWatchlist={handleRemoveFromWatchlist}
                 onAddToWatchlist={handleAddToWatchlist}
                 onEdit={() => {
                   setEditingId(tvShow.id)

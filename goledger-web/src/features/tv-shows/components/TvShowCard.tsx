@@ -6,7 +6,6 @@ type Props = {
     isEditing: boolean,
     isUpdating: boolean,
     isDeleting: boolean,
-    isWatchlisting: boolean,
     editedDescription: string,
     onEdit: () => void,
     onCancel: () => void,
@@ -14,7 +13,8 @@ type Props = {
     onSave: () => void,
     onDelete: () => void,
     alreadyWatchlisted: boolean,
-    onAddToWatchlist: () => void
+    onAddToWatchlist: () => void,
+    onRemoveFromWatchlist: () => void
 }
 
 export const TvShowCard = ({
@@ -22,7 +22,6 @@ export const TvShowCard = ({
     isEditing,
     isUpdating,
     isDeleting,
-    isWatchlisting,
     editedDescription,
     onEdit,
     onCancel,
@@ -30,7 +29,8 @@ export const TvShowCard = ({
     onDelete,
     onSave,
     alreadyWatchlisted,
-    onAddToWatchlist
+    onAddToWatchlist,
+    onRemoveFromWatchlist
 }: Props) => {
     const navigate = useNavigate();
 
@@ -117,23 +117,27 @@ export const TvShowCard = ({
 
                 <div className="flex gap-3">
 
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onAddToWatchlist();
-                        }}
-                        disabled={alreadyWatchlisted}
-                        className={`text-sm ${alreadyWatchlisted
-                            ? 'text-gray-400 cursor-not-allowed'
-                            : 'text-green-600 hover:underline cursor-pointer'
-                            }`}
-                    >
-                        {isWatchlisting
-                            ? 'Adding...'
-                            : alreadyWatchlisted
-                                ? 'Added'
-                                : 'Add to Watchlist'}
-                    </button>
+                    {alreadyWatchlisted ? (
+                        <button
+                            className="cursor-pointer text-red-600 text-sm hover:underline"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onRemoveFromWatchlist()
+                            }}
+                        >
+                            Remove
+                        </button>
+                    ) : (
+                        <button
+                            className="cursor-pointer text-green-600 text-sm hover:underline"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAddToWatchlist()
+                            }}
+                        >
+                            Add to Watchlist
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

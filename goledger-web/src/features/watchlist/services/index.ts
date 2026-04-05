@@ -9,8 +9,9 @@ export type Watchlist = {
     tvShows: { '@assetType': string, '@key': string }[]
 }
 
-export type WatchlistNormalized = Omit<Watchlist, '@key'> & {
-    id: string
+export type WatchlistNormalized = Omit<Watchlist, '@key' | 'tvShows'> & {
+    id: string,
+    tvShows: { '@assetType': string, id: string }[]
 }
 
 export const getWatchlists = async (): Promise<WatchlistNormalized[]> => {
@@ -27,6 +28,10 @@ export const getWatchlists = async (): Promise<WatchlistNormalized[]> => {
     return result.map((item: Watchlist) => ({
         ...item,
         id: item['@key'],
+        tvShows: (item.tvShows || []).map((tvShow) => ({
+            id: tvShow['@key'],
+            '@assetType': tvShow['@assetType'],
+        }))
     }))
 }
 
