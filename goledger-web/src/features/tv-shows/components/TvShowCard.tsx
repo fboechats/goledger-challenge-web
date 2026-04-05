@@ -38,7 +38,7 @@ export const TvShowCard = ({
 
     return (
         <div
-            className="bg-white rounded-xl cursor-pointer shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
             onClick={() => navigate(`/tv-shows/${tvShow.id}`)}
         >
             <div className="flex items-center">
@@ -54,7 +54,7 @@ export const TvShowCard = ({
                                     onSave();
                                 }}
                                 disabled={isUpdating}
-                                className="cursor-pointer text-blue-600 text-sm font-medium hover:underline"
+                                className="text-blue-600 text-sm font-medium hover:underline"
                             >
                                 Save
                             </button>
@@ -64,7 +64,7 @@ export const TvShowCard = ({
                                     e.stopPropagation();
                                     onCancel();
                                 }}
-                                className="cursor-pointer text-gray-500 text-sm font-medium hover:underline"
+                                className="text-gray-500 text-sm font-medium hover:underline"
                             >
                                 Cancel
                             </button>
@@ -76,7 +76,7 @@ export const TvShowCard = ({
                                     e.stopPropagation();
                                     onEdit();
                                 }}
-                                className="cursor-pointer text-blue-600 text-sm font-medium hover:underline"
+                                className="text-blue-600 text-sm font-medium hover:underline"
                             >
                                 Edit
                             </button>
@@ -90,7 +90,7 @@ export const TvShowCard = ({
                                     }
                                 }}
                                 disabled={isDeleting}
-                                className="cursor-pointer text-red-600 text-sm font-medium hover:underline disabled:opacity-50"
+                                className="text-red-600 text-sm font-medium hover:underline disabled:opacity-50"
                             >
                                 Delete
                             </button>
@@ -121,7 +121,7 @@ export const TvShowCard = ({
 
                     {alreadyWatchlisted ? (
                         <button
-                            className="cursor-pointer text-red-600 text-sm hover:underline"
+                            className="text-red-600 text-sm hover:underline"
                             disabled={isWatchlisting}
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -132,7 +132,7 @@ export const TvShowCard = ({
                         </button>
                     ) : (
                         <button
-                            className="cursor-pointer text-green-600 text-sm hover:underline"
+                            className="text-green-600 text-sm hover:underline"
                             disabled={isWatchlisting}
                             onClick={(e) => {
                                 e.stopPropagation();

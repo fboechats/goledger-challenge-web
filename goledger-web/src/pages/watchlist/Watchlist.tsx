@@ -77,7 +77,7 @@ export default function Watchlist() {
                                     </span>
                                     <button
                                         onClick={handleRemoveFromWatchlist}
-                                        className="cursor-pointer text-red-600 text-sm hover:underline"
+                                        className="text-red-600 text-sm hover:underline"
                                     >
                                         Remove
                                     </button>
