@@ -2,6 +2,9 @@ export default async function handler(req, res) {
     try {
         const url = `${process.env.API_URL}${req.url}`
 
+        console.log(process.env)
+        console.log(process.env.API_URL)
+
         const auth = Buffer.from(
             `${process.env.USER}:${process.env.PASSWORD}`
         ).toString('base64');
