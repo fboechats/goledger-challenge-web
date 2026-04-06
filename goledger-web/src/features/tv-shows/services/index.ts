@@ -7,7 +7,7 @@ export type TvShowNormalized = Omit<TvShow, '@key'> & {
 }
 
 export const getTvShows = async (): Promise<TvShowNormalized[]> => {
-  const response = await api.post('/api/query/search', {
+  const response = await api.post('/query/search', {
     query: {
       selector: {
         '@assetType': 'tvShows',

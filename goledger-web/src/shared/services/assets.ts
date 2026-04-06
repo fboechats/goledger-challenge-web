@@ -2,25 +2,25 @@ import type { AssetsCreate, AssetsDelete, AssetsRead, AssetsUpdate } from "../ty
 import { api } from "./api"
 
 export const readAsset = async <T extends AssetsRead>(asset: T) => {
-    return api.post('/api/query/readAsset', {
+    return api.post('/query/readAsset', {
         key: asset,
     })
 }
 
 export const createAsset = async <T extends AssetsCreate>(asset: T) => {
-    return api.post('/api/invoke/createAsset', {
+    return api.post('/invoke/createAsset', {
         asset: [asset],
     })
 }
 
 export const deleteAsset = async <T extends AssetsDelete>(asset: T) => {
-    return api.post('/api/invoke/deleteAsset', {
+    return api.post('/invoke/deleteAsset', {
         key: asset,
     })
 }
 
 export const updateAsset = async <T extends AssetsUpdate>(asset: T) => {
-    return api.post('/api/invoke/updateAsset', {
+    return api.post('/invoke/updateAsset', {
         update: asset,
     })
 }

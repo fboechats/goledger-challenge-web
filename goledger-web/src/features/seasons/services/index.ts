@@ -16,7 +16,7 @@ export type SeasonNormalized = Omit<Season, '@key'> & {
 }
 
 export const getSeasons = async (tvShowId: string): Promise<SeasonNormalized[]> => {
-    const response = await api.post('/api/query/search', {
+    const response = await api.post('/query/search', {
         query: {
             selector: {
                 '@assetType': 'seasons',

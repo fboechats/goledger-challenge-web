@@ -3,7 +3,7 @@ import { createAsset, updateAsset } from '../../../shared/services/assets'
 import type { CreateWatchlistInput, UpdateWatchlistInput, Watchlist, WatchlistNormalized } from '../types'
 
 export const getWatchlists = async (): Promise<WatchlistNormalized[]> => {
-    const response = await api.post('/api/query/search', {
+    const response = await api.post('/query/search', {
         query: {
             selector: {
                 '@assetType': 'watchlist',

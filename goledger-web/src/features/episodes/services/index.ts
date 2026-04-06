@@ -3,7 +3,7 @@ import { createAsset, deleteAsset, updateAsset } from '../../../shared/services/
 import type { CreateEpisodeInput, Episode, EpisodeNormalized, UpdateEpisodeInput } from '../types'
 
 export const getEpisodes = async (seasonId: string): Promise<EpisodeNormalized[]> => {
-    const response = await api.post('/api/query/search', {
+    const response = await api.post('/query/search', {
         query: {
             selector: {
                 '@assetType': 'episodes',
