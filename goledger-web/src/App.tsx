@@ -127,14 +127,14 @@ function App() {
               <button
                 type="submit"
                 disabled={!title || isPending}
-                className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg disabled:opacity-50"
               >
                 {isPending ? 'Creating...' : 'Add TV Show'}
               </button>
             </div>
           </form>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {data?.map((tvShow) => {
               const alreadyAdded = watchlist?.tvShows?.some(
                 (item) => item.id === tvShow.id

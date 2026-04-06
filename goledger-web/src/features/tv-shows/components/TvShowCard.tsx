@@ -38,7 +38,7 @@ export const TvShowCard = ({
 
     return (
         <div
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
+            className="cursor-pointer bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition"
             onClick={() => navigate(`/tv-shows/${tvShow.id}`)}
         >
             <div className="flex items-center">

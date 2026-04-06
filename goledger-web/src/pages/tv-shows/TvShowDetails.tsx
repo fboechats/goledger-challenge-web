@@ -32,14 +32,14 @@ export default function TvShowDetails() {
     const [episodeDescription, setEpisodeDescription] = useState('')
     const [releaseDate, setReleaseDate] = useState('')
 
-    const { mutate: createSeason, isPending } = useCreateSeason(id!)
+    const { mutate: createSeason, isPending: isCreatingSeason } = useCreateSeason(id!)
     const { data: tvShow } = useTvShow(id)
     const { data: seasons, isLoading, error } = useSeasons(id)
     const { mutate: deleteSeason } = useDeleteSeason()
     const { mutate: updateSeason } = useUpdateSeason()
 
     const { data: episodes } = useEpisodes(selectedSeason || undefined)
-    const { mutate: createEpisode } = useCreateEpisode(selectedSeason!)
+    const { mutate: createEpisode, isPending: isCreatingEpisode } = useCreateEpisode(selectedSeason!)
     const { mutate: deleteEpisode } = useDeleteEpisode()
     const { mutate: updateEpisode } = useUpdateEpisode()
 
@@ -104,10 +104,10 @@ export default function TvShowDetails() {
                         />
 
                         <button
-                            disabled={!seasonNumber || isPending}
-                            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 text-nowrap"
+                            disabled={!seasonNumber || isCreatingSeason}
+                            className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg disabled:opacity-50 text-nowrap"
                         >
-                            Add Season
+                            {isCreatingSeason ? 'Creating...' : 'Add Season'}
                         </button>
                     </form>
                 </div>
@@ -268,10 +268,10 @@ export default function TvShowDetails() {
                                                 />
 
                                                 <button
-                                                    disabled={!episodeNumber || !episodeTitle}
-                                                    className="bg-blue-600 text-white px-3 py-2 rounded disabled:opacity-50 text-nowrap"
+                                                    disabled={!episodeNumber || !episodeTitle || isCreatingEpisode}
+                                                    className="bg-blue-600 hover:bg-blue-700 transition text-white px-4 py-2 rounded-lg disabled:opacity-50 text-nowrap"
                                                 >
-                                                    Add Episode
+                                                    {isCreatingEpisode ? 'Creating...' : 'Add Episode'}
                                                 </button>
                                             </form>
                                         </div>

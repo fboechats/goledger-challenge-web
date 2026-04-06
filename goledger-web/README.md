@@ -2,6 +2,9 @@
 
 A modern React application to manage TV Shows, Seasons, Episodes and Watchlists.
 
+## 🚀 Live Demo
+https://goledger-challenge-web-pi.vercel.app/
+
 ---
 
 ## ✨ Features
@@ -43,6 +46,8 @@ src/
 │
 ├── pages/
 
+---
+
 ### Key decisions
 
 * Separation of concerns (UI, hooks, utils)
@@ -66,13 +71,35 @@ Run the project:
 
 npm run dev
 
+---
+
 ## 🔐 Environment Variables
 
 Create a `.env` file in the root:
 
-VITE_API_URL = "your_api_url"
+VITE_BASE_URL = "your_api_url"
 VITE_USER = "your_user"
 VITE_PASSWORD = "your_password"
+
+---
+
+## 🧠 Decisions
+
+* Used React Query for server state
+* Normalized API responses (@key → id)
+* Created reusable hooks for each feature
+* Proxy used to bypass HTTP/HTTPS issues
+
+---
+
+## ✨ Features
+
+* TV Shows listing
+* Watchlist (add/remove tv shows)
+* Seasons CRUD
+* Episodes CRUD
+
+---
 
 ## 🧪 Improvements (Future Work)
 
@@ -82,6 +109,9 @@ VITE_PASSWORD = "your_password"
 * Dark mode
 
 ---
+
+## ⚠️ Notes
+Backend API runs over HTTP, so a proxy is required in production
 
 ## 👨‍💻 Author
 
