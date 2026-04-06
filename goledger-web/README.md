@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# 🎬 TV Shows Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React application to manage TV Shows, Seasons, Episodes and Watchlists.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+* 📺 TV Shows CRUD (create, edit, delete)
+* 📚 Seasons management per TV Show
+* 🎞 Episodes management per Season
+* ⭐ Watchlist (add/remove TV Shows)
+* 🔎 Data fetching with caching
+* 🔔 User feedback with toast notifications
+* 📦 Clean and modular architecture
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🧠 Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* React
+* TypeScript
+* Tailwind CSS
+* TanStack Query (React Query)
+* React Router
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🏗 Architecture
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The project follows a feature-based structure:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+src/
+├── features/
+│   ├── tv-shows/
+│   ├── seasons/
+│   ├── episodes/
+│   ├── watchlist/
+│
+├── shared/
+│   ├── components/
+│   ├── utils/
+│
+├── pages/
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Key decisions
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* Separation of concerns (UI, hooks, utils)
+* Reusable hooks for API calls
+* Pure utility functions for data transformations
+* Centralized query state handling
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+git clone https://github.com/fboechats/goledger-challenge-web.git
+
+Install dependencies:
+
+npm install
+
+Run the project:
+
+npm run dev
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root:
+
+VITE_API_URL = "your_api_url"
+VITE_USER = "your_user"
+VITE_PASSWORD = "your_password"
+
+## 🧪 Improvements (Future Work)
+
+* Pagination / infinite scroll
+* Better watchlist UX (multiple lists support)
+* Unit and E2E tests
+* Dark mode
+
+---
+
+## 👨‍💻 Author
+
+Made with 💻 by Filipe
